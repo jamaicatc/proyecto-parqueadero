@@ -3,7 +3,7 @@ package model;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Cliente {
+public abstract class Cliente {
     private String nombre;
     private String cedula;
     private String telefono;
@@ -54,6 +54,9 @@ public class Cliente {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+
+    // Método abstracto que deben implementar las subclases
+    public abstract boolean tieneMembresiaActiva();
 
     @Override
     public String toString() {
