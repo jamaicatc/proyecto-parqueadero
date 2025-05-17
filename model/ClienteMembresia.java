@@ -41,13 +41,13 @@ public class ClienteMembresia extends Cliente {
         mensaje.append("Cédula: ").append(getCedula()).append("\n");
         mensaje.append("Teléfono: ").append(getTelefono()).append("\n");
         mensaje.append("Correo: ").append(getCorreo()).append("\n");
-        mensaje.append("Tipo de Membresía: ").append(membresia.getTipoMembresia()).append("\n");
+        mensaje.append("Tipo de Membresía: ").append(membresia.getTipo()).append("\n");
         mensaje.append("Fecha de expiración: ").append(fechaExpiracion).append("\n");
         JOptionPane.showMessageDialog(null, mensaje.toString(), "Información del Cliente con Membresía", JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public String toString() {
-        return super.toString() + ", Membresía: " + membresia.getTipoMembresia() + ", Expira: " + fechaExpiracion;
+        return super.toString() + ", Membresía: " + membresia.getTipo() + ", Expira: " + fechaExpiracion;
     }
 }

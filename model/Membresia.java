@@ -1,5 +1,8 @@
 package model;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class Membresia {
 
     private String fechaInicio;
@@ -56,5 +59,17 @@ public class Membresia {
                 "Fecha Inicio: " + fechaInicio + "\n" +
                 "Fecha Fin: " + fechaFin + "\n" +
                 "Tarifa: $" + tarifa;
+    }
+
+        public boolean verificarVigencia() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate hoy = LocalDate.now();
+        try {
+            LocalDate inicio = LocalDate.parse(fechaInicio, formatter);
+            LocalDate fin = LocalDate.parse(fechaFin, formatter);
+            return (hoy.isEqual(inicio) || hoy.isAfter(inicio)) && (hoy.isBefore(fin) || hoy.isEqual(fin));
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

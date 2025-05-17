@@ -2,8 +2,9 @@ package model;
 
 import java.util.List;
 import java.util.ArrayList;
+import interfaces.IMembresiaActiva;
 
-public abstract class Cliente {
+public class Cliente implements IMembresiaActiva  {
     private String nombre;
     private String cedula;
     private String telefono;
@@ -55,8 +56,10 @@ public abstract class Cliente {
         this.correo = correo;
     }
 
-    // Método abstracto que deben implementar las subclases
-    public abstract boolean tieneMembresiaActiva();
+    @Override
+    public boolean tieneMembresiaActiva() {
+        return false;
+    }
 
     @Override
     public String toString() {
