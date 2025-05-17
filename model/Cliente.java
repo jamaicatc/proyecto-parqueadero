@@ -2,8 +2,9 @@ package model;
 
 import java.util.List;
 import java.util.ArrayList;
+import interfaces.IMembresiaActiva;
 
-public class Cliente {
+public abstract class Cliente implements IMembresiaActiva {
     private String nombre;
     private String cedula;
     private String telefono;
