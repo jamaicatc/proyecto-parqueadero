@@ -13,11 +13,11 @@ public class Membresia {
     public Membresia() {
     }
 
-    public Membresia(String fechaInicio, String fechaFin, int tarifa, TipoMembresia tipo) {
+    public Membresia(TipoMembresia tipo, String fechaInicio, String fechaFin, int tarifa) {
+        this.tipo = tipo;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.tarifa = tarifa;
-        this.tipo = tipo;
     }
 
     public String getFechaInicio() {
@@ -62,7 +62,7 @@ public class Membresia {
     }
 
         public boolean verificarVigencia() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate hoy = LocalDate.now();
         try {
             LocalDate inicio = LocalDate.parse(fechaInicio, formatter);

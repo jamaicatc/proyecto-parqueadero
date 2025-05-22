@@ -6,6 +6,7 @@ public class Vehiculo {
     public String modelo;
     private TipoMembresia membresia;
     private String fechaFinMembresia;
+    private String fechaInicioMembresia;
     
     public Vehiculo(String placa, String color, String modelo) {
         this.placa = placa;
@@ -54,4 +55,11 @@ public class Vehiculo {
         this.fechaFinMembresia = fechaFinMembresia;
     }
 
+    public String getFechaInicioMembresia() {
+        return fechaInicioMembresia;
+    }
+
+    public void setFechaInicioMembresia(String fechaInicoMembresia) {
+        this.fechaInicioMembresia = fechaInicoMembresia;
+    }
 }
