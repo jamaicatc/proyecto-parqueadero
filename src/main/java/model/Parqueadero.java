@@ -140,7 +140,6 @@ public class Parqueadero {
 
             switch (opcion) {
                 case 0:
-
                     while (true) {
                         int opcionesCampoIngreso = JOptionPane.showConfirmDialog(null, campos, "Ingrese los datos",
                                 JOptionPane.OK_CANCEL_OPTION);
@@ -171,12 +170,14 @@ public class Parqueadero {
                             break;
                         }
                     }
+                    break; // AÑADIR ESTE BREAK PARA EVITAR QUE PASE AL SIGUIENTE CASO
 
                 case 1:
                     continuar = false;
                     break;
 
                 default:
+                    continuar = false; // También salir si se cierra la ventana
                     break;
             }
         }
@@ -204,6 +205,12 @@ public class Parqueadero {
                     null,
                     opciones,
                     "Seleccionar");
+        
+            // Si el usuario cancela o cierra el diálogo
+            if (seleccion == null) {
+                continuar = false;
+                break;
+            }
 
             switch (seleccion) {
                 case "Actualizar nombre":
@@ -223,6 +230,9 @@ public class Parqueadero {
                     break;
                 case "Ver datos actuales":
                     mostrarInformacion();
+                    break;
+                case "Salir":
+                    continuar = false;
                     break;
             }
         }

@@ -1,8 +1,11 @@
 package service;
 
 import model.Cliente;
+import model.Vehiculo;
 
 import javax.swing.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,5 +158,79 @@ public class ClienteService {
         } else {
             JOptionPane.showMessageDialog(null, "Eliminación cancelada.");
         }
+    }
+    
+    /**
+     * Muestra todos los vehículos asociados a un cliente y si tienen cobertura activa
+     * Este método busca un cliente y muestra información detallada de sus vehículos
+     * incluyendo si la membresía está vigente o ha vencido
+     */
+    public void mostrarVehiculosCliente() {
+        // Primero buscamos al cliente
+        Cliente cliente = buscarCliente();
+        if (cliente == null) {
+            return; // Si no se encuentra el cliente, termina el método
+        }
+        
+        List<Vehiculo> vehiculos = cliente.getVehiculos();
+        
+        // Verificamos si el cliente tiene vehículos
+        if (vehiculos == null || vehiculos.isEmpty()) {
+            JOptionPane.showMessageDialog(null, 
+                    "El cliente " + cliente.getNombre() + " no tiene vehículos registrados.",
+                    "Sin vehículos", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // Construimos el mensaje con la información de los vehículos
+        StringBuilder mensaje = new StringBuilder();
+        mensaje.append("Vehículos de ").append(cliente.getNombre()).append(" (").append(cliente.getCedula()).append("):\n\n");
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaActual = LocalDate.now();
+        
+        // Iteramos sobre cada vehículo para mostrar su información y estado de cobertura
+        for (Vehiculo vehiculo : vehiculos) {
+            mensaje.append("Placa: ").append(vehiculo.getPlaca()).append("\n");
+            mensaje.append("Modelo: ").append(vehiculo.getModelo()).append("\n");
+            mensaje.append("Color: ").append(vehiculo.getColor()).append("\n");
+            
+            // Verificamos si el vehículo tiene membresía
+            if (vehiculo.getMembresia() != null && vehiculo.getFechaFinMembresia() != null) {
+                try {
+                    LocalDate fechaFin = LocalDate.parse(vehiculo.getFechaFinMembresia(), formatter);
+                    
+                    if (fechaActual.isBefore(fechaFin) || fechaActual.isEqual(fechaFin)) {
+                        mensaje.append("Estado: CON COBERTURA ACTIVA (hasta ").append(vehiculo.getFechaFinMembresia()).append(")\n");
+                    } else {
+                        mensaje.append("Estado: MEMBRESÍA VENCIDA (venció el ").append(vehiculo.getFechaFinMembresia()).append(")\n");
+                    }
+                } catch (Exception e) {
+                    mensaje.append("Estado: INFORMACIÓN DE MEMBRESÍA INCORRECTA\n");
+                }
+            } else {
+                mensaje.append("Estado: SIN MEMBRESÍA\n");
+            }
+            
+            mensaje.append("\n"); // Separador entre vehículos
+        }
+        
+        // Mostramos la información en un diálogo
+        JOptionPane.showMessageDialog(null, mensaje.toString(), 
+                "Vehículos del Cliente", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Obtiene todos los clientes registrados en el sistema
+     * @return Lista con todos los clientes
+     */
+    public List<Cliente> obtenerTodosLosClientes() {
+        if (listaDeClientes == null || listaDeClientes.isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                    "No hay clientes registrados en el sistema",
+                    "Sin datos", JOptionPane.INFORMATION_MESSAGE);
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(listaDeClientes);
     }
 }
