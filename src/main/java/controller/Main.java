@@ -11,6 +11,10 @@ import javax.swing.plaf.basic.BasicLabelUI;
 import model.Cliente;
 import model.Parqueadero;
 import model.Vehiculo;
+import model.Automovil;
+import model.Moto;
+import model.Camion;
+import model.Vehiculo;
 import service.ClienteService;
 import service.MembresiaService;
 import service.PagoService;
@@ -617,12 +621,9 @@ public class Main {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(COLOR_BACKGROUND);
-        panel.setBorder(new CompoundBorder(
-                new LineBorder(COLOR_SECUNDARIO, 1, true),
-                new EmptyBorder(15, 15, 15, 15)
-        ));
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        // Título
+        // Encabezado con título
         JLabel titulo = new JLabel("Gestión de Vehículos");
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
         titulo.setForeground(COLOR_TEXTO);
@@ -630,23 +631,24 @@ public class Main {
         titulo.setBorder(new EmptyBorder(0, 0, 20, 0));
         panel.add(titulo);
 
-        // Opciones de menú (usando iconos que probablemente ya existan en el proyecto)
+        // Opciones de menú
         String[][] opciones = {
-                {"Registrar Vehículo", "add_vehicle.png"},
-                {"Buscar Vehículo", "search_vehicle.png"},
-                {"Asociar Vehículo a Cliente", "add_client.png"}, // Cambiado a un icono que probablemente exista
-                {"Volver al menú principal", "back.png"}
+                {"Registrar Vehículo", null},
+                {"Buscar Vehículo", null},
+                {"Actualizar Vehículo", null},
+                {"Ver Vehículos Asociados", null},
+                {"Asociar Vehículo a Cliente", null},
+                {"Volver al menú principal", null}
         };
 
         // Panel para botones
         JPanel botonesPanel = new JPanel(new GridLayout(0, 1, 0, 10));
         botonesPanel.setBackground(COLOR_BACKGROUND);
-        botonesPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-        // Variable para resultado
+        // Variable para almacenar el resultado
         final int[] resultado = {-1};
 
-        // Crear y agregar botones
+        // Crear y agregar cada botón
         for (int i = 0; i < opciones.length; i++) {
             JButton boton = crearBotonModerno(opciones[i][0], opciones[i][1]);
             final int index = i;
@@ -659,50 +661,54 @@ public class Main {
 
         panel.add(botonesPanel);
 
-        // Separador y pie de página
-        JSeparator separador = new JSeparator();
-        separador.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        separador.setForeground(COLOR_SECUNDARIO);
-        separador.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(separador);
-
-        JLabel footer = new JLabel("Seleccione una opción");
-        footer.setFont(new Font("Segoe UI", Font.ITALIC, 12));
-        footer.setForeground(new Color(149, 165, 166));
-        footer.setAlignmentX(Component.CENTER_ALIGNMENT);
-        footer.setBorder(new EmptyBorder(10, 0, 0, 0));
-        panel.add(footer);
-
-        // ScrollPane
+        // Crear JScrollPane
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setBorder(null);
-        scrollPane.getViewport().setBackground(COLOR_BACKGROUND);
         scrollPane.setPreferredSize(new Dimension(400, 400));
 
-        // Diálogo
+        // Crear y mostrar diálogo
         JDialog dialog = new JDialog((Frame) null, "Gestión de Vehículos", true);
         dialog.setContentPane(scrollPane);
-        dialog.getContentPane().setBackground(COLOR_BACKGROUND);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setResizable(false);
-
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                resultado[0] = -1;
-            }
-        });
-
         dialog.setVisible(true);
 
-        // Procesar selección
+        // Procesar la selección
+        Cliente cliente;
+        String placa;
         switch (resultado[0]) {
-            case 0 -> vehiculoService.registrarVehiculo();
-            case 1 -> vehiculoService.buscarVehiculo();
-            case 2 -> asociarVehiculoCliente(clienteService, vehiculoService);
-            case 3, -1 -> {/* Volver al menú principal */}
+            case 0 -> {
+                cliente = clienteService.buscarCliente();
+                if (cliente != null) {
+                    vehiculoService.registrarVehiculo(cliente);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Debe seleccionar un cliente válido para registrar un vehículo");
+                }
+            }
+            case 1 -> {
+                placa = JOptionPane.showInputDialog("Ingrese la placa del vehículo a buscar:");
+                if (placa != null && !placa.trim().isEmpty()) {
+                    vehiculoService.buscarVehiculo(placa);
+                }
+            }
+            case 2 -> {
+                placa = JOptionPane.showInputDialog("Ingrese la placa del vehículo a actualizar:");
+                if (placa != null && !placa.trim().isEmpty()) {
+                    vehiculoService.actualizarVehiculo(placa);
+                }
+            }
+            case 3 -> {
+                cliente = clienteService.buscarCliente();
+                if (cliente != null) {
+                    vehiculoService.verVehiculosAsociados(cliente);
+                }
+            }
+            case 4 -> {
+                asociarVehiculoCliente(clienteService, vehiculoService);
+            }
+            case 5, -1 -> { /* Volver al menú principal */ }
         }
     }
 
@@ -873,9 +879,10 @@ public class Main {
         titulo.setBorder(new EmptyBorder(0, 0, 20, 0));
         panel.add(titulo);
 
-        // Opciones de menú - añadiendo la opción de reportes
+        // Opciones de menú - añadiendo la opción de pago por período (membresía)
         String[][] opciones = {
-                {"Registrar Pago", null},
+                {"Registrar Pago por Estacionamiento", null},
+                {"Registrar Pago por Membresía", null},
                 {"Buscar Pago por ID", null},
                 {"Calcular Monto a Pagar", null},
                 {"Generar Reportes Financieros", null},
@@ -919,15 +926,16 @@ public class Main {
         // Procesar la selección
         switch (resultado[0]) {
             case 0 -> pagoService.registrarPago();
-            case 1 -> {
+            case 1 -> pagoService.registrarPagoPorPeriodo(); // Nueva opción para registrar pago por membresía
+            case 2 -> {
                 String idPago = JOptionPane.showInputDialog("Ingrese el ID del pago a buscar:");
                 if (idPago != null && !idPago.trim().isEmpty()) {
                     pagoService.buscarPagoPorId(idPago);
                 }
             }
-            case 2 -> pagoService.calcularMontoAPagar();
-            case 3 -> pagoService.mostrarMenuReportes(); // Nueva opción para generar reportes
-            case 4, -1 -> { /* Volver al menú principal */ }
+            case 3 -> pagoService.calcularMontoAPagar();
+            case 4 -> pagoService.mostrarMenuReportes();
+            case 5, -1 -> { /* Volver al menú principal */ }
         }
     }
 
