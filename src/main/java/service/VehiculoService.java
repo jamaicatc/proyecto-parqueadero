@@ -1,7 +1,6 @@
 package service;
 
-import model.Cliente;
-import model.Vehiculo;
+import model.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -34,55 +33,27 @@ public class VehiculoService {
         this.listaGeneralVehiculos = new ArrayList<>(); // Inicialización de la lista general
     }
 
-    // Método sin parámetros para registrar un vehículo (usado desde el Main)
-    public void registrarVehiculo() {
-        JTextField placaField = new JTextField();
-        JTextField colorField = new JTextField();
-        JTextField modeloField = new JTextField();
-
-        Object[] campos = {
-            "Placa:", placaField,
-            "Color:", colorField,
-            "Modelo:", modeloField
-        };
-
-        int opcion = JOptionPane.showConfirmDialog(null, campos, "Registrar Vehículo", JOptionPane.OK_CANCEL_OPTION);
-
-        if (opcion == JOptionPane.OK_OPTION) {
-            String placa = placaField.getText().trim();
-            String color = colorField.getText().trim();
-            String modelo = modeloField.getText().trim();
-
-            if (placa.isEmpty() || color.isEmpty() || modelo.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor, llene todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                // Verificar si ya existe la placa en la lista general
-                boolean placaExiste = listaGeneralVehiculos.stream().anyMatch(v -> v.getPlaca().equalsIgnoreCase(placa));
-
-                if (placaExiste) {
-                    JOptionPane.showMessageDialog(null, "Ya existe un vehículo con esa placa.", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    Vehiculo nuevoVehiculo = new Vehiculo(placa, color, modelo);
-                    listaGeneralVehiculos.add(nuevoVehiculo);
-                    JOptionPane.showMessageDialog(null, "Vehículo registrado exitosamente.");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Registro cancelado.");
-        }
-    }
-
-    // Método para registrar un vehículo asociado a un cliente
+    // Método para registrar un vehículo
     public void registrarVehiculo(Cliente cliente) {
         if (cliente != null) {
             JTextField placaField = new JTextField();
             JTextField colorField = new JTextField();
             JTextField modeloField = new JTextField();
 
+            // Opciones para el tipo de vehículo
+            String[] tiposVehiculo = {"Automóvil", "Moto", "Camión"};
+            JComboBox<String> tipoVehiculoCombo = new JComboBox<>(tiposVehiculo);
+
+            // Cambiar el color del texto a negro
+            tipoVehiculoCombo.setForeground(new java.awt.Color(0, 0, 0));
+            // Configurar el fondo para mejor contraste
+            tipoVehiculoCombo.setBackground(new java.awt.Color(255, 255, 255));
+
             Object[] campos = {
-                "Placa:", placaField,
-                "Color:", colorField,
-                "Modelo:", modeloField
+                    "Placa:", placaField,
+                    "Color:", colorField,
+                    "Modelo:", modeloField,
+                    "Tipo de Vehículo:", tipoVehiculoCombo
             };
 
             int opcion = JOptionPane.showConfirmDialog(null, campos, "Registrar Vehículo", JOptionPane.OK_CANCEL_OPTION);
@@ -91,6 +62,7 @@ public class VehiculoService {
                 String placa = placaField.getText().trim();
                 String color = colorField.getText().trim();
                 String modelo = modeloField.getText().trim();
+                int tipoSeleccionado = tipoVehiculoCombo.getSelectedIndex();
 
                 if (placa.isEmpty() || color.isEmpty() || modelo.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Por favor, llene todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -100,16 +72,35 @@ public class VehiculoService {
 
                     // Verificar si ya existe la placa
                     boolean placaExiste = listaVehiculos.stream().anyMatch(v -> v.getPlaca().equalsIgnoreCase(placa));
-                    boolean placaExisteGeneral = listaGeneralVehiculos.stream().anyMatch(v -> v.getPlaca().equalsIgnoreCase(placa));
 
-                    if (placaExiste || placaExisteGeneral) {
+                    if (placaExiste) {
                         JOptionPane.showMessageDialog(null, "Ya existe un vehículo con esa placa.");
                     } else {
-                        Vehiculo nuevoVehiculo = new Vehiculo(placa, color, modelo);
+                        // Crear el vehículo según el tipo seleccionado
+                        Vehiculo nuevoVehiculo;
+                        String tipoVehiculoStr = tiposVehiculo[tipoSeleccionado];
+
+                        switch (tipoSeleccionado) {
+                            case 0:
+                                nuevoVehiculo = new Automovil(placa, color, modelo);
+                                break;
+                            case 1:
+                                nuevoVehiculo = new Moto(placa, color, modelo);
+                                break;
+                            case 2:
+                                nuevoVehiculo = new Camion(placa, color, modelo);
+                                break;
+                            default:
+                                nuevoVehiculo = new Vehiculo(placa, color, modelo);
+                                break;
+                        }
+
                         listaVehiculos.add(nuevoVehiculo);
-                        listaGeneralVehiculos.add(nuevoVehiculo); // Agregar a la lista general también
                         vehiculosPorCliente.put(cliente.getCedula(), listaVehiculos);
-                        JOptionPane.showMessageDialog(null, "Vehículo registrado exitosamente.");
+                        JOptionPane.showMessageDialog(null,
+                                "Vehículo registrado exitosamente.\n" +
+                                        "Tipo: " + tipoVehiculoStr + "\n" +
+                                        "Placa: " + placa);
                     }
                 }
             }
