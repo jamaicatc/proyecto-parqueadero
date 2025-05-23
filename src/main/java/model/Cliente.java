@@ -23,6 +23,14 @@ public class Cliente implements IMembresiaActiva {
         this.vehiculos = new ArrayList<>(); // Inicialización de la lista de vehículos
     }
 
+    public void setMembresias(List<Membresia> membresias) {
+        this.membresias = membresias;
+    }
+
+    public void setVehiculos(List<Vehiculo> vehiculos) {
+        this.vehiculos = vehiculos;
+    }
+
     public List<Membresia> getMembresias() {
         return membresias;
     }
@@ -34,7 +42,7 @@ public class Cliente implements IMembresiaActiva {
     public List<Vehiculo> getVehiculos() {
         return vehiculos;
     }
-    
+
     /**
      * Agrega un vehículo a la lista de vehículos del cliente
      * @param vehiculo El vehículo a agregar
@@ -44,7 +52,7 @@ public class Cliente implements IMembresiaActiva {
             this.vehiculos.add(vehiculo);
         }
     }
-    
+
     /**
      * Elimina un vehículo de la lista de vehículos del cliente
      * @param vehiculo El vehículo a eliminar
@@ -56,7 +64,7 @@ public class Cliente implements IMembresiaActiva {
         }
         return false;
     }
-    
+
     /**
      * Busca un vehículo por su placa
      * @param placa La placa del vehículo a buscar

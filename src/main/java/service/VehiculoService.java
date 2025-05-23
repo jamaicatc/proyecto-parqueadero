@@ -112,12 +112,12 @@ public class VehiculoService {
     // Método sin parámetros para buscar un vehículo (usado desde el Main)
     public Vehiculo buscarVehiculo() {
         String placa = JOptionPane.showInputDialog(null, "Ingrese la placa del vehículo a buscar:");
-        
+
         if (placa == null || placa.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Búsqueda cancelada.", "Información", JOptionPane.INFORMATION_MESSAGE);
             return null;
         }
-        
+
         // Primero buscar en la lista general
         for (Vehiculo vehiculo : listaGeneralVehiculos) {
             if (vehiculo.getPlaca().equalsIgnoreCase(placa.trim())) {
@@ -126,7 +126,7 @@ public class VehiculoService {
                 return vehiculo;
             }
         }
-        
+
         // Si no se encuentra en la lista general, buscar en las listas por cliente
         for (List<Vehiculo> vehiculos : vehiculosPorCliente.values()) {
             for (Vehiculo vehiculo : vehiculos) {
@@ -137,7 +137,7 @@ public class VehiculoService {
                 }
             }
         }
-        
+
         JOptionPane.showMessageDialog(null, "Vehículo no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
         return null;
     }
@@ -147,14 +147,14 @@ public class VehiculoService {
         if (placa == null || placa.trim().isEmpty()) {
             return null;
         }
-        
+
         // Primero buscar en la lista general
         for (Vehiculo vehiculo : listaGeneralVehiculos) {
             if (vehiculo.getPlaca().equalsIgnoreCase(placa.trim())) {
                 return vehiculo;
             }
         }
-        
+
         // Si no se encuentra en la lista general, buscar en las listas por cliente
         for (List<Vehiculo> vehiculos : vehiculosPorCliente.values()) {
             for (Vehiculo vehiculo : vehiculos) {
@@ -163,7 +163,7 @@ public class VehiculoService {
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -208,7 +208,7 @@ public class VehiculoService {
                 // Crear un modelo de tabla para mostrar los vehículos
                 String[] columnNames = {"Placa", "Color", "Modelo"};
                 Object[][] data = new Object[vehiculos.size()][3];
-                
+
                 // Llenar la tabla con los datos de los vehículos
                 for (int i = 0; i < vehiculos.size(); i++) {
                     Vehiculo v = vehiculos.get(i);
@@ -216,19 +216,19 @@ public class VehiculoService {
                     data[i][1] = v.getColor();
                     data[i][2] = v.getModelo();
                 }
-                
+
                 // Crear la tabla y aplicar algunas propiedades
                 final JTable table = new JTable(data, columnNames);
                 table.setFillsViewportHeight(true);
                 table.setRowHeight(25); // Altura de filas más cómoda
                 table.getTableHeader().setReorderingAllowed(false); // Evitar reordenar columnas
                 table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Solo seleccionar una fila a la vez
-                
+
                 // Ajustar el ancho de las columnas
                 table.getColumnModel().getColumn(0).setPreferredWidth(100); // Placa
                 table.getColumnModel().getColumn(1).setPreferredWidth(150); // Color
                 table.getColumnModel().getColumn(2).setPreferredWidth(200); // Modelo
-                
+
                 // Añadir listener para doble clic en una fila
                 table.addMouseListener(new MouseAdapter() {
                     @Override
@@ -242,36 +242,36 @@ public class VehiculoService {
                         }
                     }
                 });
-                
+
                 // Crear un panel de desplazamiento y añadir la tabla
                 JScrollPane scrollPane = new JScrollPane(table);
                 scrollPane.setPreferredSize(new Dimension(450, Math.min(300, 50 + vehiculos.size() * 25))); // Altura dinámica según cantidad de vehículos
-                
+
                 // Crear un panel principal que contendrá el título, la tabla y las instrucciones
                 JPanel panel = new JPanel(new BorderLayout(0, 10));
                 panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                
+
                 // Añadir un título al panel
                 JLabel titulo = new JLabel("Vehículos asociados a " + cliente.getNombre());
                 titulo.setFont(new Font("Dialog", Font.BOLD, 14));
                 titulo.setHorizontalAlignment(JLabel.CENTER);
                 panel.add(titulo, BorderLayout.NORTH);
-                
+
                 // Añadir la tabla con scroll al panel
                 panel.add(scrollPane, BorderLayout.CENTER);
-                
+
                 // Añadir instrucciones para ver detalles
                 JLabel instrucciones = new JLabel("Doble clic en un vehículo para ver más detalles");
                 instrucciones.setFont(new Font("Dialog", Font.ITALIC, 12));
                 instrucciones.setHorizontalAlignment(JLabel.CENTER);
                 panel.add(instrucciones, BorderLayout.SOUTH);
-                
+
                 // Mostrar el panel en un diálogo
                 JOptionPane.showMessageDialog(
-                    null, 
-                    panel, 
-                    "Vehículos de " + cliente.getNombre(), 
-                    JOptionPane.INFORMATION_MESSAGE
+                        null,
+                        panel,
+                        "Vehículos de " + cliente.getNombre(),
+                        JOptionPane.INFORMATION_MESSAGE
                 );
             }
             return vehiculos;
@@ -287,44 +287,44 @@ public class VehiculoService {
      */
     private void mostrarDetallesVehiculo(Vehiculo vehiculo) {
         if (vehiculo == null) return;
-        
+
         // Crear un panel para mostrar los detalles
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
+
         // Añadir los campos con los detalles
         JLabel titulo = new JLabel("Detalles del Vehículo");
         titulo.setFont(new Font("Dialog", Font.BOLD, 16));
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(titulo);
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
-        
+
         // Crear campos para cada detalle
         String[] etiquetas = {"Placa:", "Color:", "Modelo:"};
         String[] valores = {vehiculo.getPlaca(), vehiculo.getColor(), vehiculo.getModelo()};
-        
+
         for (int i = 0; i < etiquetas.length; i++) {
             JPanel filaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            
+
             JLabel etiqueta = new JLabel(etiquetas[i]);
             etiqueta.setFont(new Font("Dialog", Font.BOLD, 14));
             etiqueta.setPreferredSize(new Dimension(80, 25));
-            
+
             JLabel valor = new JLabel(valores[i]);
             valor.setFont(new Font("Dialog", Font.PLAIN, 14));
-            
+
             filaPanel.add(etiqueta);
             filaPanel.add(valor);
             panel.add(filaPanel);
         }
-        
+
         // Mostrar el panel en un diálogo
         JOptionPane.showMessageDialog(
-            null, 
-            panel, 
-            "Detalles del Vehículo", 
-            JOptionPane.INFORMATION_MESSAGE
+                null,
+                panel,
+                "Detalles del Vehículo",
+                JOptionPane.INFORMATION_MESSAGE
         );
     }
 
@@ -346,7 +346,7 @@ public class VehiculoService {
         List<Vehiculo> vehiculos = vehiculosPorCliente.get(cedula);
         return vehiculos != null ? new ArrayList<>(vehiculos) : new ArrayList<>();
     }
-    
+
     /**
      * Obtiene todos los vehículos registrados en el sistema
      * @return Lista con todos los vehículos
