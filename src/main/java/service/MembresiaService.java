@@ -590,8 +590,15 @@ public class MembresiaService {
 
     /**
      * Calcula la tarifa de membresía según el tipo de vehículo y membresía
+     * @param vehiculo El vehículo para el que se calculará la tarifa
+     * @param tipo El tipo de membresía
+     * @return El valor de la tarifa
      */
-    private int calcularTarifaMembresia(Vehiculo vehiculo, TipoMembresia tipo) {
+    public int calcularTarifaMembresia(Vehiculo vehiculo, TipoMembresia tipo) {
+        if (vehiculo == null || tipo == null || tipo == TipoMembresia.NINGUNA) {
+            return 0;
+        }
+        
         if (pagoService != null) {
             // Si tenemos el servicio de pagos, usar su método
             return (int) pagoService.calcularTarifaMembresia(vehiculo, tipo);

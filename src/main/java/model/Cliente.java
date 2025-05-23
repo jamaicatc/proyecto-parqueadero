@@ -27,6 +27,14 @@ public class Cliente implements IMembresiaActiva {
         return membresias;
     }
 
+    public void setMembresias(List<Membresia> membresias) {
+        this.membresias = membresias;
+    }
+
+    public void setVehiculos(List<Vehiculo> vehiculos) {
+        this.vehiculos = vehiculos;
+    }
+
     /**
      * Obtiene la lista de vehículos asociados al cliente
      * @return Lista de vehículos del cliente
