@@ -45,7 +45,7 @@ public class MembresiaService {
     public void setClienteService(ClienteService clienteService) {
         this.clienteService = clienteService;
     }
-    
+
     /**
      * Establece el servicio de vehículos
      */
@@ -164,11 +164,11 @@ public class MembresiaService {
         // Si tenemos el servicio de cliente configurado
         if (clienteService != null) {
             // Solicitar al usuario si desea buscar un cliente existente o crear uno nuevo
-            int opcion = JOptionPane.showConfirmDialog(null, 
-                "¿Desea buscar un cliente existente?", 
-                "Cliente para Membresía", 
-                JOptionPane.YES_NO_OPTION);
-                
+            int opcion = JOptionPane.showConfirmDialog(null,
+                    "¿Desea buscar un cliente existente?",
+                    "Cliente para Membresía",
+                    JOptionPane.YES_NO_OPTION);
+
             if (opcion == JOptionPane.YES_OPTION) {
                 return clienteService.buscarCliente();
             } else {
@@ -182,15 +182,15 @@ public class MembresiaService {
             if (nombre == null || nombre.trim().isEmpty()) {
                 return null;
             }
-            
+
             String cedula = JOptionPane.showInputDialog("Ingrese la cédula del cliente:");
             if (cedula == null || cedula.trim().isEmpty()) {
                 return null;
             }
-            
+
             String telefono = JOptionPane.showInputDialog("Ingrese el teléfono del cliente:");
             String correo = JOptionPane.showInputDialog("Ingrese el correo del cliente:");
-            
+
             return new Cliente(nombre, cedula, telefono != null ? telefono : "", correo != null ? correo : "");
         }
     }
@@ -203,40 +203,40 @@ public class MembresiaService {
             JOptionPane.showMessageDialog(null, "Vehículo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         if (vehiculo.getMembresia() == null || vehiculo.getMembresia() == TipoMembresia.NINGUNA) {
             JOptionPane.showMessageDialog(null, "Este vehículo no tiene membresía registrada", "Sin Membresía", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        
+
         // Extraer fecha de fin y verificar vigencia
         try {
             String fechaFinStr = vehiculo.getFechaFinMembresia();
             LocalDate fechaFin = LocalDate.parse(fechaFinStr, FORMATTER);
             LocalDate hoy = LocalDate.now();
-            
+
             if (fechaFin.isBefore(hoy)) {
-                JOptionPane.showMessageDialog(null, 
-                    "La membresía de este vehículo ha VENCIDO.\n" +
-                    "Tipo: " + vehiculo.getMembresia() + "\n" +
-                    "Fecha de vencimiento: " + fechaFinStr + "\n" +
-                    "Se recomienda renovar la membresía.",
-                    "Membresía Vencida", JOptionPane.WARNING_MESSAGE
+                JOptionPane.showMessageDialog(null,
+                        "La membresía de este vehículo ha VENCIDO.\n" +
+                                "Tipo: " + vehiculo.getMembresia() + "\n" +
+                                "Fecha de vencimiento: " + fechaFinStr + "\n" +
+                                "Se recomienda renovar la membresía.",
+                        "Membresía Vencida", JOptionPane.WARNING_MESSAGE
                 );
             } else {
                 long diasRestantes = java.time.temporal.ChronoUnit.DAYS.between(hoy, fechaFin);
-                JOptionPane.showMessageDialog(null, 
-                    "La membresía de este vehículo está VIGENTE.\n" +
-                    "Tipo: " + vehiculo.getMembresia() + "\n" +
-                    "Fecha de vencimiento: " + fechaFinStr + "\n" +
-                    "Días restantes: " + diasRestantes,
-                    "Membresía Vigente", JOptionPane.INFORMATION_MESSAGE
+                JOptionPane.showMessageDialog(null,
+                        "La membresía de este vehículo está VIGENTE.\n" +
+                                "Tipo: " + vehiculo.getMembresia() + "\n" +
+                                "Fecha de vencimiento: " + fechaFinStr + "\n" +
+                                "Días restantes: " + diasRestantes,
+                        "Membresía Vigente", JOptionPane.INFORMATION_MESSAGE
                 );
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al verificar la vigencia de la membresía.\n" + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE
+            JOptionPane.showMessageDialog(null,
+                    "Error al verificar la vigencia de la membresía.\n" + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE
             );
         }
     }
@@ -249,29 +249,29 @@ public class MembresiaService {
             JOptionPane.showMessageDialog(null, "Vehículo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         if (vehiculo.getMembresia() == null || vehiculo.getMembresia() == TipoMembresia.NINGUNA) {
-            JOptionPane.showMessageDialog(null, 
-                "Este vehículo no tiene membresía para renovar.\n" +
-                "Por favor, registre una nueva membresía.",
-                "Sin Membresía", JOptionPane.INFORMATION_MESSAGE
+            JOptionPane.showMessageDialog(null,
+                    "Este vehículo no tiene membresía para renovar.\n" +
+                            "Por favor, registre una nueva membresía.",
+                    "Sin Membresía", JOptionPane.INFORMATION_MESSAGE
             );
             registrarMembresia(vehiculo);
             return;
         }
-        
+
         // Mostrar información actual y opciones de renovación
         try {
             String fechaFinStr = vehiculo.getFechaFinMembresia();
             TipoMembresia tipoActual = vehiculo.getMembresia();
-            
+
             String mensaje = "Membresía actual:\n" +
-                            "Tipo: " + tipoActual + "\n" +
-                            "Vencimiento: " + fechaFinStr + "\n\n" +
-                            "¿Desea renovar con el mismo tipo de membresía?";
-                            
+                    "Tipo: " + tipoActual + "\n" +
+                    "Vencimiento: " + fechaFinStr + "\n\n" +
+                    "¿Desea renovar con el mismo tipo de membresía?";
+
             int opcion = JOptionPane.showConfirmDialog(null, mensaje, "Renovar Membresía", JOptionPane.YES_NO_CANCEL_OPTION);
-            
+
             if (opcion == JOptionPane.YES_OPTION) {
                 // Renovar con el mismo tipo
                 renovarConMismoTipo(vehiculo, tipoActual);
@@ -281,9 +281,9 @@ public class MembresiaService {
             }
             // Si es CANCEL_OPTION, simplemente se regresa
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al renovar la membresía.\n" + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE
+            JOptionPane.showMessageDialog(null,
+                    "Error al renovar la membresía.\n" + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE
             );
         }
     }
@@ -353,20 +353,20 @@ public class MembresiaService {
     private void cambiarTipoMembresia(Vehiculo vehiculo) {
         String[] tiposMembresiaStr = {"Mensual", "Trimestral", "Anual"};
         int tipoSeleccionado = JOptionPane.showOptionDialog(
-            null, 
-            "Seleccione el nuevo tipo de membresía:", 
-            "Cambiar Tipo de Membresía", 
-            JOptionPane.DEFAULT_OPTION, 
-            JOptionPane.QUESTION_MESSAGE, 
-            null, 
-            tiposMembresiaStr, 
-            tiposMembresiaStr[0]
+                null,
+                "Seleccione el nuevo tipo de membresía:",
+                "Cambiar Tipo de Membresía",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                tiposMembresiaStr,
+                tiposMembresiaStr[0]
         );
-        
+
         if (tipoSeleccionado == JOptionPane.CLOSED_OPTION) {
             return;
         }
-        
+
         TipoMembresia nuevoTipo;
         switch (tipoSeleccionado) {
             case 0: nuevoTipo = TipoMembresia.MENSUAL; break;
@@ -374,68 +374,68 @@ public class MembresiaService {
             case 2: nuevoTipo = TipoMembresia.ANUAL; break;
             default: return;
         }
-        
+
         // Actualizar tipo de membresía
         vehiculo.setMembresia(nuevoTipo);
-        
+
         // Renovar con el nuevo tipo
         renovarConMismoTipo(vehiculo, nuevoTipo);
     }
 
-    
+
     /**
      * Genera un reporte de clientes con membresías activas y próximas a vencer
      */
     public void generarReporteMembresiasActivas() {
         if (clienteService == null || vehiculoService == null) {
-            JOptionPane.showMessageDialog(null, 
-                "No se puede generar el reporte sin los servicios de cliente y vehículo", 
-                "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "No se puede generar el reporte sin los servicios de cliente y vehículo",
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // Estructuras para almacenar resultados
         Map<Cliente, List<Vehiculo>> clientesConMembresiasActivas = new HashMap<>();
         Map<Cliente, List<Vehiculo>> clientesConMembresiasProximasAVencer = new HashMap<>();
-        
+
         try {
             // Obtener todos los clientes (suponemos que existe este método)
             List<Cliente> clientes = clienteService.obtenerTodosLosClientes();
-            
+
             if (clientes == null || clientes.isEmpty()) {
-                JOptionPane.showMessageDialog(null, 
-                    "No hay clientes registrados en el sistema", 
-                    "Sin Datos", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        "No hay clientes registrados en el sistema",
+                        "Sin Datos", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
-            
+
             // Fecha actual para comparaciones
             LocalDate fechaActual = LocalDate.now();
-            
+
             // Procesar cada cliente
             for (Cliente cliente : clientes) {
                 // Verificar si el cliente tiene membresía activa
                 if (cliente.tieneMembresiaActiva()) {
                     // Obtener vehículos del cliente
                     List<Vehiculo> vehiculosCliente = vehiculoService.obtenerVehiculosPorCliente(cliente);
-                    
+
                     if (vehiculosCliente != null && !vehiculosCliente.isEmpty()) {
                         List<Vehiculo> vehiculosActivos = new ArrayList<>();
                         List<Vehiculo> vehiculosProximosAVencer = new ArrayList<>();
-                        
+
                         // Verificar estado de cada vehículo
                         for (Vehiculo vehiculo : vehiculosCliente) {
-                            if (vehiculo.getMembresia() != null && 
-                                vehiculo.getMembresia() != TipoMembresia.NINGUNA &&
-                                vehiculo.getFechaFinMembresia() != null) {
-                                
+                            if (vehiculo.getMembresia() != null &&
+                                    vehiculo.getMembresia() != TipoMembresia.NINGUNA &&
+                                    vehiculo.getFechaFinMembresia() != null) {
+
                                 try {
                                     LocalDate fechaFin = LocalDate.parse(vehiculo.getFechaFinMembresia(), FORMATTER);
-                                    
+
                                     // Verificar si está activa (no ha vencido)
                                     if (fechaActual.isBefore(fechaFin) || fechaActual.isEqual(fechaFin)) {
                                         vehiculosActivos.add(vehiculo);
-                                        
+
                                         // Verificar si está próxima a vencer (30 días o menos)
                                         long diasRestantes = ChronoUnit.DAYS.between(fechaActual, fechaFin);
                                         if (diasRestantes <= DIAS_PROXIMIDAD_VENCIMIENTO) {
@@ -448,157 +448,150 @@ public class MembresiaService {
                                 }
                             }
                         }
-                        
+
                         // Almacenar resultados
                         if (!vehiculosActivos.isEmpty()) {
                             clientesConMembresiasActivas.put(cliente, vehiculosActivos);
                         }
-                        
+
                         if (!vehiculosProximosAVencer.isEmpty()) {
                             clientesConMembresiasProximasAVencer.put(cliente, vehiculosProximosAVencer);
                         }
                     }
                 }
             }
-            
+
             // Generar y mostrar el reporte
             mostrarReporteMembresias(clientesConMembresiasActivas, clientesConMembresiasProximasAVencer);
-            
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al generar el reporte: " + e.getMessage(), 
-                "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Error al generar el reporte: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
      * Muestra el reporte de membresías activas y próximas a vencer
      */
     private void mostrarReporteMembresias(
             Map<Cliente, List<Vehiculo>> clientesConMembresiasActivas,
             Map<Cliente, List<Vehiculo>> clientesConMembresiasProximasAVencer) {
-        
+
         if (clientesConMembresiasActivas.isEmpty()) {
-            JOptionPane.showMessageDialog(null, 
-                "No se encontraron clientes con membresías activas", 
-                "Sin Datos", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "No se encontraron clientes con membresías activas",
+                    "Sin Datos", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        
+
         // Crear el reporte
         StringBuilder reporte = new StringBuilder();
         reporte.append("REPORTE DE CLIENTES CON MEMBRESÍAS ACTIVAS\n");
         reporte.append("===========================================\n\n");
-        
+
         // Estadísticas
         int totalClientes = clientesConMembresiasActivas.size();
         int totalVehiculos = 0;
         for (List<Vehiculo> vehiculos : clientesConMembresiasActivas.values()) {
             totalVehiculos += vehiculos.size();
         }
-        
+
         int totalProximosVencer = 0;
         for (List<Vehiculo> vehiculos : clientesConMembresiasProximasAVencer.values()) {
             totalProximosVencer += vehiculos.size();
         }
-        
+
         // Sección de resumen
         reporte.append("RESUMEN:\n");
         reporte.append("------------------------------------------\n");
         reporte.append("Total de clientes con membresías activas: ").append(totalClientes).append("\n");
         reporte.append("Total de vehículos con membresías activas: ").append(totalVehiculos).append("\n");
         reporte.append("Total de membresías próximas a vencer: ").append(totalProximosVencer).append("\n\n");
-        
+
         // Sección de membresías próximas a vencer
         if (!clientesConMembresiasProximasAVencer.isEmpty()) {
             reporte.append("MEMBRESÍAS PRÓXIMAS A VENCER (").append(DIAS_PROXIMIDAD_VENCIMIENTO).append(" días o menos):\n");
             reporte.append("------------------------------------------\n");
-            
+
             for (Map.Entry<Cliente, List<Vehiculo>> entry : clientesConMembresiasProximasAVencer.entrySet()) {
                 Cliente cliente = entry.getKey();
                 List<Vehiculo> vehiculos = entry.getValue();
-                
+
                 reporte.append("Cliente: ").append(cliente.getNombre()).append(" (Cédula: ").append(cliente.getCedula()).append(")\n");
                 reporte.append("Contacto: ").append(cliente.getTelefono()).append(" / ").append(cliente.getCorreo()).append("\n");
                 reporte.append("Vehículos con membresías próximas a vencer:\n");
-                
+
                 for (Vehiculo vehiculo : vehiculos) {
                     try {
                         LocalDate fechaFin = LocalDate.parse(vehiculo.getFechaFinMembresia(), FORMATTER);
                         long diasRestantes = ChronoUnit.DAYS.between(LocalDate.now(), fechaFin);
-                        
+
                         reporte.append("  - Placa: ").append(vehiculo.getPlaca())
-                              .append(" | Tipo: ").append(vehiculo.getClass().getSimpleName())
-                              .append(" | Membresía: ").append(vehiculo.getMembresia())
-                              .append(" | Vence: ").append(vehiculo.getFechaFinMembresia())
-                              .append(" (").append(diasRestantes).append(" días restantes) ⚠️\n");
+                                .append(" | Tipo: ").append(vehiculo.getClass().getSimpleName())
+                                .append(" | Membresía: ").append(vehiculo.getMembresia())
+                                .append(" | Vence: ").append(vehiculo.getFechaFinMembresia())
+                                .append(" (").append(diasRestantes).append(" días restantes) ⚠️\n");
                     } catch (Exception e) {
                         reporte.append("  - Placa: ").append(vehiculo.getPlaca())
-                              .append(" (Error al procesar fecha)\n");
+                                .append(" (Error al procesar fecha)\n");
                     }
                 }
                 reporte.append("\n");
             }
             reporte.append("\n");
         }
-        
+
         // Sección de todas las membresías activas
         reporte.append("DETALLE DE TODOS LOS CLIENTES CON MEMBRESÍAS ACTIVAS:\n");
         reporte.append("------------------------------------------\n");
-        
+
         for (Map.Entry<Cliente, List<Vehiculo>> entry : clientesConMembresiasActivas.entrySet()) {
             Cliente cliente = entry.getKey();
             List<Vehiculo> vehiculos = entry.getValue();
-            
+
             reporte.append("Cliente: ").append(cliente.getNombre()).append(" (Cédula: ").append(cliente.getCedula()).append(")\n");
             reporte.append("Contacto: ").append(cliente.getTelefono()).append(" / ").append(cliente.getCorreo()).append("\n");
             reporte.append("Vehículos con membresías activas:\n");
-            
+
             for (Vehiculo vehiculo : vehiculos) {
                 try {
                     LocalDate fechaFin = LocalDate.parse(vehiculo.getFechaFinMembresia(), FORMATTER);
                     long diasRestantes = ChronoUnit.DAYS.between(LocalDate.now(), fechaFin);
-                    
+
                     String simbolo = diasRestantes <= DIAS_PROXIMIDAD_VENCIMIENTO ? " ⚠️" : "";
-                    
+
                     reporte.append("  - Placa: ").append(vehiculo.getPlaca())
-                          .append(" | Tipo: ").append(vehiculo.getClass().getSimpleName())
-                          .append(" | Membresía: ").append(vehiculo.getMembresia())
-                          .append(" | Vence: ").append(vehiculo.getFechaFinMembresia())
-                          .append(" (").append(diasRestantes).append(" días restantes)")
-                          .append(simbolo).append("\n");
+                            .append(" | Tipo: ").append(vehiculo.getClass().getSimpleName())
+                            .append(" | Membresía: ").append(vehiculo.getMembresia())
+                            .append(" | Vence: ").append(vehiculo.getFechaFinMembresia())
+                            .append(" (").append(diasRestantes).append(" días restantes)")
+                            .append(simbolo).append("\n");
                 } catch (Exception e) {
                     reporte.append("  - Placa: ").append(vehiculo.getPlaca())
-                          .append(" (Error al procesar fecha)\n");
+                            .append(" (Error al procesar fecha)\n");
                 }
             }
             reporte.append("\n");
         }
-        
+
         // Mostrar el reporte en un JTextArea con scroll
         JTextArea textArea = new JTextArea(reporte.toString());
         textArea.setEditable(false);
         textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        
+
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(700, 500));
-        
+
         JOptionPane.showMessageDialog(null, scrollPane, "Reporte de Membresías Activas", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
      * Calcula la tarifa de membresía según el tipo de vehículo y membresía
-     * @param vehiculo El vehículo para el que se calculará la tarifa
-     * @param tipo El tipo de membresía
-     * @return El valor de la tarifa
      */
-    public int calcularTarifaMembresia(Vehiculo vehiculo, TipoMembresia tipo) {
-        if (vehiculo == null || tipo == null || tipo == TipoMembresia.NINGUNA) {
-            return 0;
-        }
-        
+    private int calcularTarifaMembresia(Vehiculo vehiculo, TipoMembresia tipo) {
         if (pagoService != null) {
             // Si tenemos el servicio de pagos, usar su método
             return (int) pagoService.calcularTarifaMembresia(vehiculo, tipo);

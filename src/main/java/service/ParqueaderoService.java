@@ -90,6 +90,9 @@ public class ParqueaderoService {
     /**
      * Registra la entrada de un vehículo temporal al parqueadero
      */
+    /**
+     * Registra la entrada de un vehículo temporal al parqueadero solicitando solo la placa
+     */
     public void registrarEntradaVehiculo() {
         String[] tiposVehiculo = {"Automóvil", "Moto", "Camión"};
 
@@ -127,7 +130,7 @@ public class ParqueaderoService {
             return;
         }
 
-        // Recolectar información del vehículo
+        // Recolectar solo la placa del vehículo
         String placa = JOptionPane.showInputDialog("Ingrese la placa del vehículo:");
         if (placa == null || placa.trim().isEmpty()) {
             return;
@@ -139,20 +142,17 @@ public class ParqueaderoService {
             return;
         }
 
-        String color = JOptionPane.showInputDialog("Ingrese el color del vehículo:");
-        String modelo = JOptionPane.showInputDialog("Ingrese el modelo del vehículo:");
-
-        // Crear el vehículo según el tipo
+        // Crear el vehículo según el tipo, usando valores predeterminados para color y modelo
         Vehiculo vehiculo = null;
         switch (tipoSeleccionado) {
             case 0: // Automóvil
-                vehiculo = new Automovil(placa, color, modelo);
+                vehiculo = new Automovil(placa, "No registrado", "No registrado");
                 break;
             case 1: // Moto
-                vehiculo = new Moto(placa, color, modelo);
+                vehiculo = new Moto(placa, "No registrado", "No registrado");
                 break;
             case 2: // Camión
-                vehiculo = new Camion(placa, color, modelo);
+                vehiculo = new Camion(placa, "No registrado", "No registrado");
                 break;
         }
 
@@ -242,8 +242,8 @@ public class ParqueaderoService {
                         "Hora de entrada: " + horaEntrada.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "\n" +
                         "Hora de salida: " + horaSalida.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "\n" +
                         "Tiempo de estancia: " + horasEstadia + " hora(s)\n\n" +
-                        "Tarifa por hora: $" + tarifaHora + "\n" +
-                        "TOTAL A PAGAR: $" + montoTotal;
+                        "Tarifa por hora: $" + String.format("%,.0f", tarifaHora) + "\n" +
+                        "TOTAL A PAGAR: $" + String.format("%,.0f", montoTotal);
 
         JOptionPane.showMessageDialog(null, factura, "Factura de Estacionamiento", JOptionPane.INFORMATION_MESSAGE);
 

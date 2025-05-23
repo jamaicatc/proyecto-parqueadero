@@ -205,7 +205,7 @@ public class Parqueadero {
                     null,
                     opciones,
                     "Seleccionar");
-        
+
             // Si el usuario cancela o cierra el diálogo
             if (seleccion == null) {
                 continuar = false;

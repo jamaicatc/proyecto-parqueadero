@@ -7,12 +7,12 @@ public class Vehiculo {
     private TipoMembresia membresia;
     private String fechaFinMembresia;
     private String fechaInicioMembresia;
-    
+
     public Vehiculo(String placa, String color, String modelo) {
         this.placa = placa;
         this.color = color;
         this.modelo = modelo;
-    
+
     }
 
     public String getPlaca() {
@@ -25,7 +25,7 @@ public class Vehiculo {
 
     public String getColor() {
         return color;
-    } 
+    }
 
     public void setColor(String color) {
         this.color = color;

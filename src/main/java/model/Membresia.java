@@ -61,7 +61,7 @@ public class Membresia {
                 "Tarifa: $" + tarifa;
     }
 
-        public boolean verificarVigencia() {
+    public boolean verificarVigencia() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate hoy = LocalDate.now();
         try {

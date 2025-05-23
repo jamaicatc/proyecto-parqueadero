@@ -73,18 +73,18 @@ public class ClienteService {
                 opcionesBusqueda,
                 opcionesBusqueda[0]
         );
-    
+
         if (opcion == JOptionPane.CLOSED_OPTION) {
             JOptionPane.showMessageDialog(null, "Búsqueda cancelada.");
             return null;
         }
-    
+
         String criterio = JOptionPane.showInputDialog("Ingrese el " + opcionesBusqueda[opcion] + " del cliente:");
         if (criterio == null || criterio.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "El criterio de búsqueda no puede estar vacío.");
             return null;
         }
-    
+
         // Buscar según el criterio seleccionado
         Cliente clienteEncontrado = null;
         switch (opcion) {
@@ -101,7 +101,7 @@ public class ClienteService {
                     .findFirst()
                     .orElse(null);
         }
-    
+
         if (clienteEncontrado != null) {
             // Formatear los datos del cliente con espacios después de los dos puntos
             String mensaje = "Cliente encontrado:\n" +
@@ -109,7 +109,7 @@ public class ClienteService {
                     "Cédula: " + clienteEncontrado.getCedula() + "\n" +
                     "Teléfono: " + clienteEncontrado.getTelefono() + "\n" +
                     "Correo: " + clienteEncontrado.getCorreo();
-    
+
             JOptionPane.showMessageDialog(null, mensaje);
             return clienteEncontrado;
         } else {
@@ -159,7 +159,7 @@ public class ClienteService {
             JOptionPane.showMessageDialog(null, "Eliminación cancelada.");
         }
     }
-    
+
     /**
      * Muestra todos los vehículos asociados a un cliente y si tienen cobertura activa
      * Este método busca un cliente y muestra información detallada de sus vehículos
@@ -171,35 +171,35 @@ public class ClienteService {
         if (cliente == null) {
             return; // Si no se encuentra el cliente, termina el método
         }
-        
+
         List<Vehiculo> vehiculos = cliente.getVehiculos();
-        
+
         // Verificamos si el cliente tiene vehículos
         if (vehiculos == null || vehiculos.isEmpty()) {
-            JOptionPane.showMessageDialog(null, 
+            JOptionPane.showMessageDialog(null,
                     "El cliente " + cliente.getNombre() + " no tiene vehículos registrados.",
                     "Sin vehículos", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        
+
         // Construimos el mensaje con la información de los vehículos
         StringBuilder mensaje = new StringBuilder();
         mensaje.append("Vehículos de ").append(cliente.getNombre()).append(" (").append(cliente.getCedula()).append("):\n\n");
-        
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate fechaActual = LocalDate.now();
-        
+
         // Iteramos sobre cada vehículo para mostrar su información y estado de cobertura
         for (Vehiculo vehiculo : vehiculos) {
             mensaje.append("Placa: ").append(vehiculo.getPlaca()).append("\n");
             mensaje.append("Modelo: ").append(vehiculo.getModelo()).append("\n");
             mensaje.append("Color: ").append(vehiculo.getColor()).append("\n");
-            
+
             // Verificamos si el vehículo tiene membresía
             if (vehiculo.getMembresia() != null && vehiculo.getFechaFinMembresia() != null) {
                 try {
                     LocalDate fechaFin = LocalDate.parse(vehiculo.getFechaFinMembresia(), formatter);
-                    
+
                     if (fechaActual.isBefore(fechaFin) || fechaActual.isEqual(fechaFin)) {
                         mensaje.append("Estado: CON COBERTURA ACTIVA (hasta ").append(vehiculo.getFechaFinMembresia()).append(")\n");
                     } else {
@@ -211,12 +211,12 @@ public class ClienteService {
             } else {
                 mensaje.append("Estado: SIN MEMBRESÍA\n");
             }
-            
+
             mensaje.append("\n"); // Separador entre vehículos
         }
-        
+
         // Mostramos la información en un diálogo
-        JOptionPane.showMessageDialog(null, mensaje.toString(), 
+        JOptionPane.showMessageDialog(null, mensaje.toString(),
                 "Vehículos del Cliente", JOptionPane.INFORMATION_MESSAGE);
     }
 
